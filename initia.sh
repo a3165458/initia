@@ -96,7 +96,7 @@ function install_node() {
     cd slinky
 
     # checkout proper version
-    git checkout v0.4.3
+    git checkout v0.4.4
     
     make build
 
@@ -105,6 +105,16 @@ function install_node() {
        -e 's/^oracle_address = ""/oracle_address = "127.0.0.1:8080"/' \
        -e 's/^client_timeout = "2s"/client_timeout = "500ms"/' \
        -e 's/^metrics_enabled = "false"/metrics_enabled = "false"/' $HOME/.initia/config/app.toml
+       
+    sed -i.bak \
+    -e 's/^timeout_propose *=.*/timeout_propose = "3s"/' \
+    -e 's/^timeout_propose_delta *=.*/timeout_propose_delta = "500ms"/' \
+    -e 's/^timeout_prevote *=.*/timeout_prevote = "1s"/' \
+    -e 's/^timeout_prevote_delta *=.*/timeout_prevote_delta = "500ms"/' \
+    -e 's/^timeout_precommit *=.*/timeout_precommit = "1s"/' \
+    -e 's/^timeout_precommit_delta *=.*/timeout_precommit_delta = "500ms"/' \
+    -e 's/^timeout_commit *=.*/timeout_commit = "1s"/' \
+    $HOME/.initia/config/config.toml 
     
     pm2 start initiad -- start && pm2 save && pm2 startup
 
