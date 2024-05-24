@@ -122,9 +122,9 @@ function install_node() {
     
     # 配置快照
     
-    wget -O initia_237655.tar.lz4 https://snapshots.polkachu.com/testnet-snapshots/initia/initia_237655.tar.lz4 --inet4-only
-    initiad unsafe-reset-all
-    lz4 -c -d initia_237655.tar.lz4  | tar -x -C $HOME/.initia
+    SNAP_NAME=$(curl -s https://ss-t.initia.nodestake.org/ | egrep -o ">20.*\.tar.lz4" | tr -d ">")
+    curl -o - -L https://ss-t.initia.nodestake.org/${SNAP_NAME}  | lz4 -c -d - | tar -x -C $HOME/.initia
+    mv $HOME/.initia/priv_validator_state.json.backup $initia/.evmosd/data/priv_validator_state.json
     
     pm2 start ./build/slinky -- --oracle-config-path ./config/core/oracle.json --market-map-endpoint 0.0.0.0:53490
     pm2 restart initiad
